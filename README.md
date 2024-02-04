@@ -4,6 +4,10 @@ An intuitive web UI enabling non-technical users to test different prompts with 
 
 ## Setup
 
+**Video Walkthrough (5 mins) of Steps Below**
+
+https://www.loom.com/share/b6760bcabf9547d9bc2934c3fcf9e1f0?sid=f9d8b0e2-d622-4063-807d-d8942ea96ea1
+
 ### Ollama
 
 1. [Download Ollama](https://ollama.ai/download/Ollama-darwin.zip)
@@ -16,7 +20,9 @@ An intuitive web UI enabling non-technical users to test different prompts with 
 From Terminal, run the folowing commands one at a time (type them in or copy and paste them in and then press Enter):
 
 1. `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
-2. `brew install pipenv`
+2. `echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/ralphjsmit/.zprofile` (Homebrew will tell you to run this in the "Next Steps")
+3. `eval "$(/opt/homebrew/bin/brew shellenv)"` (Homebrew will tell you to run this in the "Next Steps")
+4. `brew install pipenv`
 
 ### Open AI
 
