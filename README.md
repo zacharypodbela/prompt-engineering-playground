@@ -21,7 +21,7 @@ From Terminal, run the folowing commands one at a time (type them in or copy and
 ### Open AI
 
 1. [Sign up for Open AI](https://platform.openai.com/signup)
-2. In the settings area of your developer account, generate a new API key and save it on your computer to use later (i.e. in Notes or something similar)
+2. In [User settings > API Keys](https://platform.openai.com/api-keys), click "Create new secret key", give it a name, and then save it to use later. (Note: Once you close this page, you will not be able to see the key again and will need to generate a new on if you lose it.)
 
 ### This Project
 
