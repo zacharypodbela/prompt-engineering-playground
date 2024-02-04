@@ -5,10 +5,9 @@ name = "pypi"
 
 [packages]
 streamlit = "*"
-pandas = "*"
 langchain = "*"
-openai = "*"
 python-dotenv = "*"
+langchain-openai = "*"
 
 [dev-packages]
 

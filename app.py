@@ -1,13 +1,11 @@
-import pandas as pd
 from dotenv import load_dotenv
-from io import StringIO
 
 import streamlit as st
-import streamlit.components.v1 as components
 
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.llms import Ollama
+from langchain_core.output_parsers import StrOutputParser
 
 load_dotenv()
 
@@ -28,7 +26,9 @@ prompt = ChatPromptTemplate.from_messages([
     ("user", "{prompt}")
 ])
 
-chain = prompt | llm 
+output_parser = StrOutputParser()
+
+chain = prompt | llm | output_parser
 
 @st.cache_data
 def query_openai(system, prompt):
