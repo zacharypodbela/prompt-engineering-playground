@@ -23,7 +23,7 @@ From Terminal, run the folowing commands one at a time (type them in or copy and
 
 ## Download and Setup this Project
 
-1. [Download the project](https://github.com/ollama/ollama/archive/refs/heads/main.zip)
+1. [Download the project](https://github.com/zacharypodbela/prompt-engineering-playground/archive/refs/heads/main.zip)
 2. Double click the zip file you downloaded and your computer should automatically unzip it into a folder
 3. In Terminal, type `cd ` and then drag the folder into the terminal window. The text in Terminal should now look something like `cd /Users/...`. Press Enter.
 4. Type `echo "OPENAI_API_KEY=` followed by your Open AI key then type `" >> .env` and press Enter.
