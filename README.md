@@ -4,9 +4,7 @@ An intuitive web UI enabling non-technical users to test different prompts with 
 
 ## Setup
 
-**Video Walkthrough (5 mins) of Steps Below**
-
-https://www.loom.com/share/b6760bcabf9547d9bc2934c3fcf9e1f0?sid=f9d8b0e2-d622-4063-807d-d8942ea96ea1
+**Video Walkthrough (5 mins) of Steps Below**: https://www.loom.com/share/b6760bcabf9547d9bc2934c3fcf9e1f0?sid=f9d8b0e2-d622-4063-807d-d8942ea96ea1
 
 ### Ollama
 
