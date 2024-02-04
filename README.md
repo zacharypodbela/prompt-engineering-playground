@@ -1,6 +1,8 @@
-# Quickstart
+# Prompt Engineering Playground
 
-## Setup Dependancies
+An intuitive web UI enabling non-technical users to test different prompts with a variety of AI models.
+
+## Setup
 
 ### Ollama
 
@@ -21,7 +23,7 @@ From Terminal, run the folowing commands one at a time (type them in or copy and
 1. [Sign up for Open AI](https://platform.openai.com/signup)
 2. In the settings area of your developer account, generate a new API key and save it on your computer to use later (i.e. in Notes or something similar)
 
-## Download and Setup this Project
+### This Project
 
 1. [Download the project](https://github.com/zacharypodbela/prompt-engineering-playground/archive/refs/heads/main.zip)
 2. Double click the zip file you downloaded and your computer should automatically unzip it into a folder
@@ -29,7 +31,7 @@ From Terminal, run the folowing commands one at a time (type them in or copy and
 4. Type `echo "OPENAI_API_KEY=` followed by your Open AI key then type `" >> .env` and press Enter.
 5. Type `pipenv install` and press Enter.
 
-## Run the Project
+## Running the Program
 
 Follow these steps whenever you want to run the project.
 
@@ -37,3 +39,9 @@ Follow these steps whenever you want to run the project.
 2. Type `pipenv shell` and press Enter.
 3. Type `streamlit run app.py` and press Enter.
 4. A chrome window should open up where you can interact with the AI!
+
+## Roadmap
+
+Future improvements to be added to the project:
+
+- [ ] Enable different Ollama and Open AI models to be choosen from a dropdown
