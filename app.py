@@ -19,23 +19,31 @@ load_dotenv()
 # "text-ada-001" (1/50 the cost of davinci)
 # You can also use non-OpenAI models by instantiating a different LLM class here.
 # See: https://python.langchain.com/en/latest/modules/models/llms/integrations.html
-llm = ChatOpenAI()
 
-prompt = ChatPromptTemplate.from_messages([
-    ("system", "{system}"),
-    ("user", "{prompt}")
-])
-
-output_parser = StrOutputParser()
-
-chain = prompt | llm | output_parser
+def init_chain(llm):
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", "{system}"),
+        ("user", "{prompt}")
+    ])
+    output_parser = StrOutputParser()
+    chain = prompt | llm | output_parser
+    return chain
 
 @st.cache_data
 def query_openai(system, prompt):
+    llm = ChatOpenAI()
+    chain = init_chain(llm)
+    return chain.invoke({ "system": system, "prompt": prompt })
+
+@st.cache_data
+def query_ollama(system, prompt):
+    llm = Ollama(model="llama2")
+    chain = init_chain(llm)
     return chain.invoke({ "system": system, "prompt": prompt })
 
 system = st.text_input('Enter the system instructions here:')
 prompt = st.text_input('Enter your user prompt here:')
-if system and prompt:
-    result = query_openai(system, prompt)
+llm_choice = st.radio("Choose the language model", ("OpenAI (Paid)", "Ollama (Free)"))
+if system and prompt and llm_choice:
+    result = query_ollama(system, prompt) if llm_choice == "Ollama (Free)" else query_openai(system, prompt)
     st.write(result)
