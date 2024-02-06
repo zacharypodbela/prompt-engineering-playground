@@ -25,9 +25,8 @@ This app provides an easy interface to get started testing prompts and sending t
 From Terminal, run the folowing commands one at a time (type them in or copy and paste them in and then press Enter):
 
 1. `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
-2. `echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/ralphjsmit/.zprofile` (Homebrew will tell you to run this in the "Next Steps")
-3. `eval "$(/opt/homebrew/bin/brew shellenv)"` (Homebrew will tell you to run this in the "Next Steps")
-4. `brew install pipenv`
+2. When Homebrew finishes installing it will show two commands under **Next Steps** which you need to run. These commands are custom to your machine, so I can't list them here. One beginning with `echo 'eval "$(/opt...` and one beginning with `eval "$(/opt/`. Copy and paste each into Terminal and press Enter.
+3. `brew install pipenv`
 
 ### Open AI
 
