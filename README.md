@@ -1,6 +1,6 @@
 # Prompt Engineering Playground
 
-An intuitive web UI enabling non-technical users to test prompts for utilization within applications with a variety of AI models.
+An intuitive web UI enabling non-technical users to design prompts that can be utilized within applications and test them with a variety of AI models.
 
 When it comes to designing prompts **for use in software applications**, consumer AI interfaces (like OpenAI's Chat GPT web app) hinder exploration of AI capabilities in several ways:
 * Consumer interfaces only allow the definition of user prompts, while direct interface with models allows for deinition of _system_ and user prompts.
