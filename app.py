@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from string import Formatter
 
 import streamlit as st
 
@@ -19,6 +20,8 @@ load_dotenv()
 # "text-ada-001" (1/50 the cost of davinci)
 # You can also use non-OpenAI models by instantiating a different LLM class here.
 # See: https://python.langchain.com/en/latest/modules/models/llms/integrations.html
+
+prompt_builder_tab, model_configuration_tab, output_tab = st.tabs(["Prompt Builder >", "Model Settings >", "Ouput"])
 
 def init_chain(llm):
     prompt = ChatPromptTemplate.from_messages([
@@ -41,9 +44,52 @@ def query_ollama(system, prompt):
     chain = init_chain(llm)
     return chain.invoke({ "system": system, "prompt": prompt })
 
-system = st.text_input('Enter the system instructions here:')
-prompt = st.text_input('Enter your user prompt here:')
-llm_choice = st.radio("Choose the language model", ("OpenAI (Paid)", "Ollama (Free)"))
-if system and prompt and llm_choice:
-    result = query_ollama(system, prompt) if llm_choice == "Ollama (Free)" else query_openai(system, prompt)
-    st.write(result)
+system = None
+prompt = None
+with prompt_builder_tab:
+    # Switch between Prompt Builder Modes
+    prompt_builder_mode = st.radio("Choose which prompt builder to use", ("Plain Text", "Templates and Variables"))
+    
+    st.subheader(f"{prompt_builder_mode} Prompt Builder")
+    if prompt_builder_mode == "Plain Text":
+        # Prompt Entry Fields
+        system = st.text_input('Enter the system instructions here:')
+        prompt = st.text_input('Enter your user prompt here:')
+    elif prompt_builder_mode == "Templates and Variables":
+        # Template Entry
+        _system = st.text_input('Enter the system instructions *template* here:', value="Always speak in a {tone} way.")
+        _prompt = st.text_input('Enter your user prompt here:', value="Can you tell me about {topic}?")
+        template_keys = [i[1] for i in Formatter().parse(_system+" "+_prompt) if i[1] is not None]
+
+        # Data Editor
+        st.write("Add your data to be inserted in the templates above here:")
+        edited_data = st.data_editor({
+            "tone": "friendly",
+            "topic": "science"
+        }, use_container_width=True, num_rows="dynamic")
+        missing_keys = [key for key in template_keys if key not in edited_data]
+
+        # Prompt Preview
+        st.subheader("Compiled Prompt")
+        if missing_keys:
+            st.markdown(f"⛔️ Set the following missing variables to generate prompts: `{'`, `'.join(missing_keys)}`")
+        else:
+            system = _system.format(**edited_data)
+            prompt = _prompt.format(**edited_data)
+            st.write(f"System instructions that will be passed to model:")
+            st.markdown(f"```{system}```")
+            st.write(f"User prompt that will be passed to model:")
+            st.markdown(f"```{prompt}```")
+
+with model_configuration_tab:
+    llm_choice = st.radio("Choose the language model", ("Ollama (Free)", "OpenAI (Paid)"))
+
+with output_tab:
+    if system and prompt and llm_choice:
+        result = query_ollama(system, prompt) if llm_choice == "Ollama (Free)" else query_openai(system, prompt)
+        st.write(result)
+    else:
+        if not system or not prompt:
+            st.write("⛔️ Finish configuring the prompt in the Prompt Builder tab to generate an output.")
+        if not llm_choice:
+            st.write("⛔️ Finish configuring the model in the Model Settings tab to generate an output.")
