@@ -59,10 +59,15 @@ elif prompt_builder_i == 1:
 
     # Data Editor
     st.write("Add your data to be inserted in the templates above here:")
-    edited_data = st.data_editor({
-        "tone": "friendly",
-        "topic": "science"
-    }, use_container_width=True, num_rows="dynamic")
+    edited_data = st.data_editor(
+        {
+            "tone": "friendly",
+            "topic": "science"
+        }, 
+        use_container_width=True, 
+        num_rows="dynamic", 
+        column_config={ "_index": "Variable Name", "value": "Value" }
+    )
     missing_keys = [key for key in template_keys if key not in edited_data]
 
     # Prompt Preview
