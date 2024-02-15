@@ -21,8 +21,6 @@ load_dotenv()
 # You can also use non-OpenAI models by instantiating a different LLM class here.
 # See: https://python.langchain.com/en/latest/modules/models/llms/integrations.html
 
-prompt_builder_tab, model_configuration_tab, output_tab = st.tabs(["Prompt Builder >", "Model Settings >", "Ouput"])
-
 def init_chain(llm):
     prompt = ChatPromptTemplate.from_messages([
         ("system", "{system}"),
@@ -44,32 +42,31 @@ def query_ollama(system, prompt):
     chain = init_chain(llm)
     return chain.invoke({ "system": system, "prompt": prompt })
 
-system = None
-prompt = None
-with prompt_builder_tab:
-    # Switch between Prompt Builder Modes
-    prompt_builder_mode = st.radio("Choose which prompt builder to use", ("Plain Text", "Templates and Variables"))
-    
-    st.subheader(f"{prompt_builder_mode} Prompt Builder")
-    if prompt_builder_mode == "Plain Text":
-        # Prompt Entry Fields
-        system = st.text_input('Enter the system instructions here:')
-        prompt = st.text_input('Enter your user prompt here:')
-    elif prompt_builder_mode == "Templates and Variables":
-        # Template Entry
-        _system = st.text_input('Enter the system instructions *template* here:', value="Always speak in a {tone} way.")
-        _prompt = st.text_input('Enter your user prompt here:', value="Can you tell me about {topic}?")
-        template_keys = [i[1] for i in Formatter().parse(_system+" "+_prompt) if i[1] is not None]
+st.header("Model Input")
+system, prompt = None, None # system and prompt will be the outputs of this section
+prompt_buidler_modes = ["Plain Text Prompt Entry", "Templates and Variable Prompt Builder"]
+prompt_builder_mode = st.radio("Choose whether to enter exact system and user prompts or build prompts using templates and data:", prompt_buidler_modes)
+prompt_builder_i = prompt_buidler_modes.index(prompt_builder_mode)
+if prompt_builder_i == 0:
+    # Prompt Entry Fields
+    system = st.text_input('Enter the system instructions here:', value="Always speak in a friendly way.")
+    prompt = st.text_input('Enter your user prompt here:', value="Can you tell me about science?")
+elif prompt_builder_i == 1:
+    # Template Entry
+    _system = st.text_input('Enter the system instructions *template* here:', value="Always speak in a {tone} way.")
+    _prompt = st.text_input('Enter your user prompt here:', value="Can you tell me about {topic}?")
+    template_keys = [i[1] for i in Formatter().parse(_system+" "+_prompt) if i[1] is not None]
 
-        # Data Editor
-        st.write("Add your data to be inserted in the templates above here:")
-        edited_data = st.data_editor({
-            "tone": "friendly",
-            "topic": "science"
-        }, use_container_width=True, num_rows="dynamic")
-        missing_keys = [key for key in template_keys if key not in edited_data]
+    # Data Editor
+    st.write("Add your data to be inserted in the templates above here:")
+    edited_data = st.data_editor({
+        "tone": "friendly",
+        "topic": "science"
+    }, use_container_width=True, num_rows="dynamic")
+    missing_keys = [key for key in template_keys if key not in edited_data]
 
-        # Prompt Preview
+    # Prompt Preview
+    with st.container(border=True):
         st.subheader("Compiled Prompt")
         if missing_keys:
             st.markdown(f"⛔️ Set the following missing variables to generate prompts: `{'`, `'.join(missing_keys)}`")
@@ -81,15 +78,15 @@ with prompt_builder_tab:
             st.write(f"User prompt that will be passed to model:")
             st.markdown(f"```{prompt}```")
 
-with model_configuration_tab:
-    llm_choice = st.radio("Choose the language model", ("Ollama (Free)", "OpenAI (Paid)"))
+st.header("Model Settings")
+llm_choice = st.radio("Choose the language model", ("Ollama (Free)", "OpenAI (Paid)"))
 
-with output_tab:
-    if system and prompt and llm_choice:
-        result = query_ollama(system, prompt) if llm_choice == "Ollama (Free)" else query_openai(system, prompt)
-        st.write(result)
-    else:
-        if not system or not prompt:
-            st.write("⛔️ Finish configuring the prompt in the Prompt Builder tab to generate an output.")
-        if not llm_choice:
-            st.write("⛔️ Finish configuring the model in the Model Settings tab to generate an output.")
+st.header("Model Response")
+if system and prompt and llm_choice:
+    result = query_ollama(system, prompt) if llm_choice == "Ollama (Free)" else query_openai(system, prompt)
+    st.write(result)
+else:
+    if not system or not prompt:
+        st.write("⛔️ Finish entering or building your input prompts to generate an output.")
+    if not llm_choice:
+        st.write("⛔️ Finish selecting configurations for the model in the Model Settings section to generate an output.")
