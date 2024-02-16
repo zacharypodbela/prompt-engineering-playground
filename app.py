@@ -49,12 +49,12 @@ prompt_builder_mode = st.radio("Choose whether to enter exact system and user pr
 prompt_builder_i = prompt_buidler_modes.index(prompt_builder_mode)
 if prompt_builder_i == 0:
     # Prompt Entry Fields
-    system = st.text_input('Enter the system instructions here:', value="Always speak in a friendly way.")
-    prompt = st.text_input('Enter your user prompt here:', value="Can you tell me about science?")
+    system = st.text_area('Enter the system instructions here:', value="Always speak in a friendly way.")
+    prompt = st.text_area('Enter your user prompt here:', value="Can you tell me about science?")
 elif prompt_builder_i == 1:
     # Template Entry
-    _system = st.text_input('Enter the system instructions *template* here:', value="Always speak in a {tone} way.")
-    _prompt = st.text_input('Enter your user prompt here:', value="Can you tell me about {topic}?")
+    _system = st.text_area('Enter the system instructions *template* here:', value="Always speak in a {tone} way.")
+    _prompt = st.text_area('Enter your user prompt here:', value="Can you tell me about {topic}?")
     template_keys = [i[1] for i in Formatter().parse(_system+" "+_prompt) if i[1] is not None]
 
     # Data Editor
