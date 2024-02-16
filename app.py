@@ -85,13 +85,14 @@ elif prompt_builder_i == 1:
 
 st.header("Model Settings")
 llm_choice = st.radio("Choose the language model", ("Ollama (Free)", "OpenAI (Paid)"))
+run_on_change = st.checkbox("Automatically re-run the model on change of input?", value=True)
 
 st.header("Model Response")
-if system and prompt and llm_choice:
+should_run = True if run_on_change else st.button("Run Model")
+if system and prompt and llm_choice and should_run:
     result = query_ollama(system, prompt) if llm_choice == "Ollama (Free)" else query_openai(system, prompt)
     st.write(result)
-else:
-    if not system or not prompt:
-        st.write("⛔️ Finish entering or building your input prompts to generate an output.")
-    if not llm_choice:
-        st.write("⛔️ Finish selecting configurations for the model in the Model Settings section to generate an output.")
+elif not system or not prompt:
+    st.write("⛔️ Finish entering or building your input prompts to generate an output.")
+elif not llm_choice:
+    st.write("⛔️ Finish selecting configurations for the model in the Model Settings section to generate an output.")
