@@ -3,9 +3,10 @@
 An intuitive web UI enabling non-technical users to design prompts that can be utilized within applications and test them with a variety of AI models.
 
 When it comes to designing prompts **for use in software applications**, consumer AI interfaces (like OpenAI's Chat GPT web app) hinder exploration of AI capabilities in several ways:
-* Consumer interfaces only allow the definition of user prompts, while direct interface with models allows for deinition of _system_ and user prompts.
-* Consumer interfaces usually only allow the selection of one or two model versions, while a much larger variety with different tradeoffs are available when interfacing directly. Using OpenAI as an example, the web app only allows GPT3.5 or GPT4, but the API supports [9 different language models](https://openai.com/pricing).
-* Even when using the exact same models, the responses provided can sometimes be markedly different given the subject matter filtering or privacy rules in the consumer application.
+
+- Consumer interfaces only allow the definition of user prompts, while direct interface with models allows for deinition of _system_ and user prompts.
+- Consumer interfaces usually only allow the selection of one or two model versions, while a much larger variety with different tradeoffs are available when interfacing directly. Using OpenAI as an example, the web app only allows GPT3.5 or GPT4, but the API supports [9 different language models](https://openai.com/pricing).
+- Even when using the exact same models, the responses provided can sometimes be markedly different given the subject matter filtering or privacy rules in the consumer application.
 
 This app provides an easy interface to get started testing prompts and sending them through the same rails that a production software application would leverage (i.e. APIs or locally running Open Source models).
 
@@ -56,4 +57,5 @@ Future improvements to be added to the project:
 
 - [ ] Enable different Ollama and Open AI models to be choosen from a dropdown
 - [ ] Estimate costs of Open AI API calls and display cost-tracking in UI
-- [ ] Support more complex use cases, like follow-up prompts and/or document upload and retrival
+- [ ] Support more complex use cases, like follow-up prompts and/or document upload and retrival.
+  - _Follow-up prompts (prompt chaining) is in **Beta** on branch `feature/prompt-chaining`_
