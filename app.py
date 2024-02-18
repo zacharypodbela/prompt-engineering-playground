@@ -56,6 +56,24 @@ def return_responses_of_previous_prompts_as_template_data(prompt_index):
 
 ## Streamlit UI
 
+def validate_and_render_instructions(_input, input_label, all_data):
+    st.write(f"{input_label.capitalize()} instructions that will be passed to model:")
+    if _input:
+        template_keys = [i[1] for i in Formatter().parse(_input) if i[1] is not None]
+        missing_keys = [key for key in template_keys if key not in all_data]
+        if missing_keys:
+            [missing_prompt_keys, missing_normal_keys] = partition(missing_keys, lambda k: k.startswith("prompt_"))
+            if missing_normal_keys:
+                st.markdown(f"⛔️ Set the following missing variables to generate prompts: `{'`, `'.join(missing_normal_keys)}`")
+            if missing_prompt_keys:
+                st.markdown(f"⛔️ Ensure all previous prompts have run to generate values for: `{'`, `'.join(missing_prompt_keys)}`")
+        else:
+            input = _input.format(**all_data)
+            st.markdown(f"```\n{input}\n```")
+            return input
+    else:
+        st.write(f"⛔️ Enter a {input_label} prompt template.")
+
 def render_prompt(index):
     multiple_prompt_mode = st.session_state.number_prompts > 1
     is_first_prompt = index == 1
@@ -71,16 +89,11 @@ def render_prompt(index):
     prompt_builder_mode = st.radio("Choose whether to enter exact system and user prompts or build prompts using templates and data:", prompt_buidler_modes, index=1 if multiple_prompt_mode and not is_first_prompt else 0, key=f"Prompt Builder Mode {index}")
     prompt_builder_i = prompt_buidler_modes.index(prompt_builder_mode)
     _system = st.text_area(f"Enter the system instructions here:", key=f"System {index}")
-    _prompt = st.text_area(f"Enter your user prompt here:", key=f"Prompt {index}")
+    _prompt = st.text_area(f"Enter your user instructions here:", key=f"Prompt {index}")
     if prompt_builder_i == 0:
-        # Prompt Entry Fields
         system = _system
         prompt = _prompt
     elif prompt_builder_i == 1:
-        # Template Entry
-        template_keys = [i[1] for i in Formatter().parse(_system+" "+_prompt) if i[1] is not None]
-
-        # Data Editor
         st.write("Add your data to be inserted in the templates:")
         data_frame_element_config = {
             "use_container_width": True, 
@@ -101,29 +114,13 @@ def render_prompt(index):
             st.dataframe(return_responses_of_previous_prompts_as_template_data(index), **data_frame_element_config)
 
         all_data = {**data_from_previous_prompts, **edited_data}
-        missing_keys = [key for key in template_keys if key not in all_data]
+        all_data = {k: v for k, v in all_data.items() if v is not None} # Remove keys with value=None
 
         # Prompt Preview
         with st.container(border=True):
             st.subheader("Compiled Prompt")
-            if missing_keys:
-                [missing_prompt_keys, missing_normal_keys] = partition(missing_keys, lambda k: k.startswith("prompt_"))
-                if missing_normal_keys:
-                    st.markdown(f"⛔️ Set the following missing variables to generate prompts: `{'`, `'.join(missing_normal_keys)}`")
-                if missing_prompt_keys:
-                    st.markdown(f"⛔️ Ensure all previous prompts have run to generate values for: `{'`, `'.join(missing_prompt_keys)}`")
-            if not _system:
-                st.write("⛔️ Enter a system prompt template.")
-            if not _prompt:
-                st.write("⛔️ Enter a user prompt template.")
-            
-            if not missing_keys and _system and _prompt:
-                system = _system.format(**all_data)
-                prompt = _prompt.format(**all_data)
-                st.write(f"System instructions that will be passed to model:")
-                st.markdown(f"```\n{system}\n```")
-                st.write(f"User prompt that will be passed to model:")
-                st.markdown(f"```\n{prompt}\n```")
+            system = validate_and_render_instructions(_system, "system", all_data)
+            prompt = validate_and_render_instructions(_prompt, "user", all_data)                  
 
     st.header("Model Settings")
     llm_choice = st.radio("Choose the language model", ("Ollama (Free)", "OpenAI (Paid)"), key=f"Model Choice {index}")
