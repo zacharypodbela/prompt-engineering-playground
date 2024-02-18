@@ -8,6 +8,7 @@ streamlit = "*"
 langchain = "*"
 python-dotenv = "*"
 langchain-openai = "*"
+pydash = "*"
 
 [dev-packages]
 
