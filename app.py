@@ -23,14 +23,12 @@ def init_chain(llm):
     return chain
 
 @st.cache_data
-def query_openai(system, prompt):
-    llm = ChatOpenAI(model_name='gpt-3.5-turbo-0125')
-    chain = init_chain(llm)
-    return chain.invoke({ "system": system, "prompt": prompt })
+def query_llm(system, prompt, llm_choice):
+    if llm_choice == "OpenAI (Paid)":
+        llm = ChatOpenAI(model_name='gpt-3.5-turbo-0125')
+    else:
+        llm = Ollama(model="llama2")
 
-@st.cache_data
-def query_ollama(system, prompt):
-    llm = Ollama(model="llama2")
     chain = init_chain(llm)
     return chain.invoke({ "system": system, "prompt": prompt })
 
@@ -53,6 +51,15 @@ def save_prompt_response(prompt_index, response):
 
 def return_responses_of_previous_prompts_as_template_data(prompt_index):
     return { f"prompt_{i}": st.session_state.prompt_responses[i] for i in range(1, prompt_index) }
+
+if 'already_ran_inputs' not in st.session_state:
+    st.session_state.already_ran_inputs = set()
+
+def mark_inputs_have_run(system, prompt, llm_choice):
+    st.session_state.already_ran_inputs.add((system, prompt, llm_choice))
+
+def inputs_have_run_before(system, prompt, llm_choice):
+    return (system, prompt, llm_choice) in st.session_state.already_ran_inputs
 
 ## Streamlit UI
 
@@ -129,8 +136,9 @@ def render_prompt(index):
     st.header("Model Response")
     should_run = True if run_on_change else st.button("Run Model", key=f"Run Model {index}")
     result = None
-    if system and prompt and llm_choice and should_run:
-        result = query_ollama(system, prompt) if llm_choice == "Ollama (Free)" else query_openai(system, prompt)
+    if system and prompt and llm_choice and (should_run or inputs_have_run_before(system, prompt, llm_choice)):
+        mark_inputs_have_run(system, prompt, llm_choice)
+        result = query_llm(system, prompt, llm_choice)
         st.write(result)
         if is_last_prompt:
             st.button("Chain the output of this prompt to another prompt", on_click=increase_prompt_count)
